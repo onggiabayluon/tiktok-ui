@@ -12,23 +12,36 @@ import { useEffect, useRef, useState } from 'react';
 const cx = classNames.bind(styles);
 
 function Search() {
-    const [searchResult, setsearchResult] = useState('');
+    const [searchResult, setSearchResult] = useState([]);
     const [searchValue, setSearchValue] = useState('');
     const [isVisible, setIsVisible] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const inputRef = useRef();
 
     useEffect(() => {
+        // Mounted =>
+        if (!searchValue.trim()) {
+            setSearchResult([]);
+            return;
+        }
+
         // When wating for response => Show Loading
-        // When response finished => Remove loading
-        setTimeout(() => {
-            setsearchResult([1, 1, 1]);
-        }, 300);
-    }, []);
+        setLoading(true);
+
+        // Fetch data
+        fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(searchValue)}&type=less`)
+            .then((res) => res.json())
+            .then((res) => setSearchResult(res.data))
+            .finally(() => {
+                // When response finished => Remove loading
+                setLoading(false);
+            });
+    }, [searchValue]);
 
     const handleClose = () => {
         setSearchValue('');
-        setsearchResult([]);
+        setSearchResult([]);
         inputRef.current.focus();
     };
 
@@ -44,10 +57,9 @@ function Search() {
                 <div className={cx('search-result')} tabIndex="-1" {...attrs}>
                     <PopperWrapper>
                         <h4 className={cx('search-title')}>Account</h4>
-                        <AccountItem />
-                        <AccountItem />
-                        <AccountItem />
-                        <AccountItem />
+                        {searchResult.map((result) => (
+                            <AccountItem key={result.id} data={result} />
+                        ))}
                     </PopperWrapper>
                 </div>
             )}
@@ -68,9 +80,12 @@ function Search() {
                         <FontAwesomeIcon icon={faCircleXmark} />
                     </button>
                 )}
-                {/* <button className={cx('loading-ico')}>
-                    <FontAwesomeIcon icon={faSpinner} />
-                </button> */}
+
+                {!!loading && (
+                    <button className={cx('loading-ico')}>
+                        <FontAwesomeIcon icon={faSpinner} />
+                    </button>
+                )}
 
                 <button className={cx('search-ico')}>
                     <FontAwesomeIcon icon={faMagnifyingGlass} />
