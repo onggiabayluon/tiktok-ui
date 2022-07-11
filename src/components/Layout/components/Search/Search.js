@@ -1,7 +1,7 @@
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountItem from '~/components/AccountItem';
 import { useDebounce } from '~/hooks';
-
+import * as searchServices from '~/api-services/searchServices';
 import classNames from 'classnames/bind';
 import styles from './Search.module.scss';
 
@@ -30,17 +30,20 @@ function Search() {
             return;
         }
 
-        // When wating for response => Show Loading
-        setLoading(true);
+        const fetchApi = async () => {
+            // When wating for response => Show Loading
+            setLoading(true);
 
-        // Fetch data
-        fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(debounceValue)}&type=less`)
-            .then((res) => res.json())
-            .then((res) => setSearchResult(res.data))
-            .finally(() => {
-                // When response finished => Remove loading
-                setLoading(false);
-            });
+            // Fetch data
+            const result = await searchServices.search(debounceValue);
+            // Update Search Result data
+            setSearchResult(result);
+
+            // When finish => remove Loading
+            setLoading(false);
+        };
+
+        fetchApi();
     }, [debounceValue]);
 
     const handleClose = () => {
