@@ -1,5 +1,6 @@
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountItem from '~/components/AccountItem';
+import { useDebounce } from '~/hooks';
 
 import classNames from 'classnames/bind';
 import styles from './Search.module.scss';
@@ -17,11 +18,14 @@ function Search() {
     const [isVisible, setIsVisible] = useState(true);
     const [loading, setLoading] = useState(false);
 
+    // Delay 0,5 second whenever searching
+    const debounceValue = useDebounce(searchValue, 500);
+
     const inputRef = useRef();
 
     useEffect(() => {
         // Mounted =>
-        if (!searchValue.trim()) {
+        if (!debounceValue.trim()) {
             setSearchResult([]);
             return;
         }
@@ -30,14 +34,14 @@ function Search() {
         setLoading(true);
 
         // Fetch data
-        fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(searchValue)}&type=less`)
+        fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(debounceValue)}&type=less`)
             .then((res) => res.json())
             .then((res) => setSearchResult(res.data))
             .finally(() => {
                 // When response finished => Remove loading
                 setLoading(false);
             });
-    }, [searchValue]);
+    }, [debounceValue]);
 
     const handleClose = () => {
         setSearchValue('');
