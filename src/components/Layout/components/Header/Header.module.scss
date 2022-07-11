@@ -18,3 +18,14 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.action-list {
+    display: flex;
+    flex-direction: row;
+}
+
+.more-btn {
+    font-size: 2rem;
+    margin-left: 20px;
+    background-color: transparent;
+}
