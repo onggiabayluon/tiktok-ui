@@ -7,13 +7,14 @@ import Following from '~/pages/Following/Following';
 import Profile from '~/pages/Profile/Profile';
 import Upload from '~/pages/Upload/Upload';
 import Search from '~/pages/Search/Search';
+import routes from '~/config/routes';
 
 const publicRoutes = [
-    { path: '/', component: Home },
-    { path: '/following', component: Following },
-    { path: '/profile', component: Profile },
-    { path: '/upload', component: Upload, layout: HeaderOnlyLayout },
-    { path: '/search', component: Search, layout: null },
+    { path: routes.home, component: Home },
+    { path: routes.following, component: Following },
+    { path: routes.profile, component: Profile },
+    { path: routes.upload, component: Upload, layout: HeaderOnlyLayout },
+    { path: routes.search, component: Search, layout: null },
 ];
 
 const privateRoutes = [];

@@ -9,7 +9,7 @@ import Header from './Header';
 const cx = classNames.bind(styles);
 const defaultFnc = () => {};
 
-function Menu({ children, items = [], onChange = defaultFnc }) {
+function Menu({ children, items = [], hideOnClick = false, onChange = defaultFnc }) {
     const [history, setHistory] = useState([{ data: items }]);
 
     const lastMenuItem = history[history.length - 1];
@@ -41,6 +41,7 @@ function Menu({ children, items = [], onChange = defaultFnc }) {
             interactive
             delay={[0, 700]}
             placement="bottom-end"
+            hideOnClick={hideOnClick}
             render={(attrs) => (
                 <div className={cx('menu-list')} tabIndex="-1" {...attrs}>
                     <PopperWrapper className={cx('menu-popper')}>
