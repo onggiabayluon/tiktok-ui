@@ -65,48 +65,52 @@ function Search() {
     };
 
     return (
-        <HeadlessTippy
-            interactive
-            visible={isVisible && searchResult.length > 0}
-            render={(attrs) => (
-                <div className={cx('search-result')} tabIndex="-1" {...attrs}>
-                    <PopperWrapper>
-                        <h4 className={cx('search-title')}>Account</h4>
-                        {searchResult.map((result) => (
-                            <AccountItem key={result.id} data={result} />
-                        ))}
-                    </PopperWrapper>
+        // Using a wrapper <div> tag around the reference element solves
+        // this by creating a new parentNode context.
+        <div>
+            <HeadlessTippy
+                interactive
+                visible={isVisible && searchResult.length > 0}
+                render={(attrs) => (
+                    <div className={cx('search-result')} tabIndex="-1" {...attrs}>
+                        <PopperWrapper>
+                            <h4 className={cx('search-title')}>Account</h4>
+                            {searchResult.map((result) => (
+                                <AccountItem key={result.id} data={result} />
+                            ))}
+                        </PopperWrapper>
+                    </div>
+                )}
+                onClickOutside={handleOnClickOutside}
+            >
+                <div className={cx('search')}>
+                    <input
+                        ref={inputRef}
+                        value={searchValue}
+                        className={cx('search__input')}
+                        placeholder="Search Accounts and Videos"
+                        spellCheck={false}
+                        onChange={handleChange}
+                        onFocus={() => setIsVisible(true)}
+                    />
+                    {!!searchValue && (
+                        <button className={cx('clear-ico')} onClick={handleClose}>
+                            <FontAwesomeIcon icon={faCircleXmark} />
+                        </button>
+                    )}
+
+                    {!!loading && (
+                        <button className={cx('loading-ico')}>
+                            <FontAwesomeIcon icon={faSpinner} />
+                        </button>
+                    )}
+
+                    <button className={cx('search-ico')}>
+                        <FontAwesomeIcon icon={faMagnifyingGlass} />
+                    </button>
                 </div>
-            )}
-            onClickOutside={handleOnClickOutside}
-        >
-            <div className={cx('search')}>
-                <input
-                    ref={inputRef}
-                    value={searchValue}
-                    className={cx('search__input')}
-                    placeholder="Search Accounts and Videos"
-                    spellCheck={false}
-                    onChange={handleChange}
-                    onFocus={() => setIsVisible(true)}
-                />
-                {!!searchValue && (
-                    <button className={cx('clear-ico')} onClick={handleClose}>
-                        <FontAwesomeIcon icon={faCircleXmark} />
-                    </button>
-                )}
-
-                {!!loading && (
-                    <button className={cx('loading-ico')}>
-                        <FontAwesomeIcon icon={faSpinner} />
-                    </button>
-                )}
-
-                <button className={cx('search-ico')}>
-                    <FontAwesomeIcon icon={faMagnifyingGlass} />
-                </button>
-            </div>
-        </HeadlessTippy>
+            </HeadlessTippy>
+        </div>
     );
 }
 
